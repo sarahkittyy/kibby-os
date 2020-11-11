@@ -1,0 +1,42 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/clang-10",
+      "-target",
+      "i686-elf",
+      "-c",
+      "src/std/io.c",
+      "-o",
+      "build/std/io.c.o",
+      "-Iinclude/",
+      "-std=gnu11",
+      "-ffreestanding",
+      "-O2",
+      "-Wall",
+      "-Wextra"
+    ],
+    "directory": "/home/sarahkitty/code/c/kibby-os",
+    "file": "/home/sarahkitty/code/c/kibby-os/src/std/io.c",
+    "output": "/home/sarahkitty/code/c/kibby-os/build/std/io.c.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang-10",
+      "-target",
+      "i686-elf",
+      "-c",
+      "src/kernel/kernel.c",
+      "-o",
+      "build/kernel/kernel.c.o",
+      "-Iinclude/",
+      "-std=gnu11",
+      "-ffreestanding",
+      "-O2",
+      "-Wall",
+      "-Wextra"
+    ],
+    "directory": "/home/sarahkitty/code/c/kibby-os",
+    "file": "/home/sarahkitty/code/c/kibby-os/src/kernel/kernel.c",
+    "output": "/home/sarahkitty/code/c/kibby-os/build/kernel/kernel.c.o"
+  }
+]

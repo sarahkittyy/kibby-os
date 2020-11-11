@@ -1,0 +1,11 @@
+[build]
+
+command=make
+
+[test]
+
+command=make run-debug
+
+[run]
+
+command=make run
