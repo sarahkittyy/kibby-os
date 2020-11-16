@@ -9,7 +9,7 @@ csrc=$(shell find src/ -type f -name '*.c')
 cobj=$(patsubst src/%.c,build/%.c.o,$(csrc))
 asrc=$(shell find src/ -type f -name '*.asm')
 aobj=$(patsubst src/%.asm,build/%.a.o,$(asrc))
-flags=-Iinclude/ -std=gnu11 -ffreestanding -O2 -Wall -Wextra -nostdlib
+flags=-Iinclude/ -std=gnu11 -ffreestanding -O2 -Wall -Wextra -nostdlib -Werror -Wno-unused-parameter -Wno-unused-variable
 
 paths=std/ kernel/internal
 buildpaths=$(patsubst %,build/%,$(paths))
@@ -27,7 +27,8 @@ run-debug: all
 	qemu-system-i386 \
 		-drive format=raw,media=cdrom,file=$(iso) \
 		-serial file:com1.log \
-		-s -S
+		-s -S \
+		-monitor stdio
 
 clean:
 	rm -rf iso/*

@@ -9,5 +9,5 @@ outb:
 
 inb:
 	mov dx, [esp + 4] ; addr
-	in ax, dx
+	in al, dx
 	ret

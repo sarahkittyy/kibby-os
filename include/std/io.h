@@ -30,4 +30,14 @@ typedef enum SERIAL {
 	COM4 = 0x2E8
 } serial_t;
 
-void puts(const char* str);
+// put char to kernel
+void kputchar(char s);
+// print to kernel (for debugging)
+void kputs(const char* str);
+
+// print single char to serial port
+void sputchar(serial_t port, char s);
+// print to serial port
+void sputs(serial_t port, const char* str);
+// read from serial port
+size_t sgets(serial_t port, char* dest);
