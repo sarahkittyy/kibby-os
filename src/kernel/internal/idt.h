@@ -15,20 +15,21 @@ typedef struct idt {
 	uint32_t addr;
 } __attribute__((packed)) idt_t;
 
-// this is all stolen from here http://www.osdever.net/bkerndev/Docs/isrs.htm
-// i don't know how these arguments are pushed onto the stack in asm
-typedef struct interrupt_state {
+typedef struct regs {
 	uint32_t gs, fs, es, ds;
-	uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;   // from 'pushad'
-	uint32_t interrupt, code;
-	uint32_t eip, cs, eflags, useresp, ss;	 // pushed automagically
-} __attribute__((packed)) interrupt_state_t;
+	uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;	// from 'pusha'
+	uint32_t id, code;
+	uint32_t eip, cs, eflags, useresp, ss;
+} __attribute__((packed)) regs_t;
 
 idt_entry_t mk_idt_entry(uint32_t offset, uint16_t selector, uint8_t type);
 
 void setup_idt();
 
-void interrupt_handler(interrupt_state_t* state);
+void irq_add_callback(uint32_t irq, void (*cb)(void));
+void irq_rm_callback(uint32_t irq);
+
+void interrupt_handler(regs_t* regs);
 
 extern void flush_idt();
 extern void isr_0();
@@ -47,5 +48,38 @@ extern void isr_12();
 extern void isr_13();
 extern void isr_14();
 extern void isr_15();
+extern void isr_16();
+extern void isr_17();
+extern void isr_18();
+extern void isr_19();
+extern void isr_20();
+extern void isr_21();
+extern void isr_22();
+extern void isr_23();
+extern void isr_24();
+extern void isr_25();
+extern void isr_26();
+extern void isr_27();
+extern void isr_28();
+extern void isr_29();
+extern void isr_30();
+extern void isr_31();
+// pic interrupts
+extern void isr_32();
+extern void isr_33();
+extern void isr_34();
+extern void isr_35();
+extern void isr_36();
+extern void isr_37();
+extern void isr_38();
+extern void isr_39();
+extern void isr_40();
+extern void isr_41();
+extern void isr_42();
+extern void isr_43();
+extern void isr_44();
+extern void isr_45();
+extern void isr_46();
+extern void isr_47();
 
-void pic_eoi();
+void pic_eoi(uint32_t interrupt);

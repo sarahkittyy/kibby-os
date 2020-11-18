@@ -34,10 +34,14 @@ typedef enum SERIAL {
 void kputchar(char s);
 // print to kernel (for debugging)
 void kputs(const char* str);
+// print to kernel (for debugging)
+void kprintf(const char* fmt, ...);
 
 // print single char to serial port
-void sputchar(serial_t port, char s);
+void cputchar(serial_t port, char s);
 // print to serial port
-void sputs(serial_t port, const char* str);
+void cputs(serial_t port, const char* str);
+// print to serial port
+void cprintf(serial_t port, const char* fmt, ...);
 // read from serial port
-size_t sgets(serial_t port, char* dest);
+size_t cgets(serial_t port, char* dest);

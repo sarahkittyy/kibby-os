@@ -40,33 +40,51 @@ void kputs(const char* str) {
 	for (size_t i = 0; i < slen; ++i) {
 		kputchar(str[i]);
 	}
-	kputchar('\n');
 }
 
-bool sisempty(serial_t port) {
+void kprintf(const char* fmt, ...) {
+	va_list args;
+	va_start(args, fmt);
+	char res[1024];
+	sprintfv(res, fmt, args);
+	va_end(args);
+
+	kputs(res);
+}
+
+bool cisempty(serial_t port) {
 	return inb(port + 5) & (0x1 << 5);
 }
-void sputchar(serial_t port, char c) {
-	while (!sisempty(port)) {}
+void cputchar(serial_t port, char c) {
+	while (!cisempty(port)) {}
 	outb(port, c);
 }
-void sputs(serial_t port, const char* str) {
+void cputs(serial_t port, const char* str) {
 	size_t slen = strlen(str);
 
 	for (size_t i = 0; i < slen; ++i) {
-		sputchar(port, str[i]);
+		cputchar(port, str[i]);
 	}
-	sputchar(port, '\n');
 }
 
-bool sisready(serial_t port) {
+void cprintf(serial_t port, const char* fmt, ...) {
+	va_list args;
+	va_start(args, fmt);
+	char res[1024];
+	sprintfv(res, fmt, args);
+	va_end(args);
+
+	cputs(port, res);
+}
+
+bool cisready(serial_t port) {
 	return inb(port + 5) & 1;
 }
-size_t sgets(serial_t port, char* dest) {
+size_t cgets(serial_t port, char* dest) {
 	size_t tot = 0;
 	char recvd;
 	do {
-		while (!sisready(port)) {}
+		while (!cisready(port)) {}
 		recvd	  = inb(port);
 		dest[tot] = recvd;
 		tot++;

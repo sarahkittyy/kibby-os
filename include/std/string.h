@@ -1,6 +1,7 @@
 #pragma once
 
 #include <std/type.h>
+#include <stdarg.h>
 
 // compute the length of a string
 size_t strlen(const char* str);
@@ -14,5 +15,12 @@ void strcat(char* dest, const char* src);
 // compare strings
 int strcmp(const char* a, const char* b);
 
+// reverse a string in-place
+void strrev(char* str);
+
+// int to string.
+void itoa(char* dest, int x, int base);
+
 // print to string
 size_t sprintf(char* out, const char* fmt, ...);
+size_t sprintfv(char* out, const char* fmt, va_list l);

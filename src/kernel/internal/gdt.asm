@@ -3,7 +3,9 @@ extern kibby_gdt_table
 global gdt_flush
 
 gdt_flush:
+	cli
 	lgdt [kibby_gdt_table]
+	sti
 	; enable protected mode by setting the lowest bit of register cr0
 	mov eax, cr0
 	or al, 1

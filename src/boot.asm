@@ -31,8 +31,6 @@ _start:
 	extern kernel_main
 	call kernel_main
 
-	; disable interrupts
-	cli
 ; this *SHOULD* hang forever cuz it waits for an interrupt (which we disabled) but fuck sometimes some weird settings can still raise interrupts so we inf loop anyway
 .hang: hlt 
 	jmp .hang ; yeet

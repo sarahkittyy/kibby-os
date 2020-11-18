@@ -7,6 +7,8 @@ link_script=link.ld
 
 csrc=$(shell find src/ -type f -name '*.c')
 cobj=$(patsubst src/%.c,build/%.c.o,$(csrc))
+chdr=$(shell find include/ -type f -name '*.h')
+chdr += $(shell find src/ -type f -name '*.h')
 asrc=$(shell find src/ -type f -name '*.asm')
 aobj=$(patsubst src/%.asm,build/%.a.o,$(asrc))
 flags=-Iinclude/ -std=gnu11 -ffreestanding -O2 -Wall -Wextra -nostdlib -Werror -Wno-unused-parameter -Wno-unused-variable
@@ -49,8 +51,8 @@ $(kernel): $(link_script) $(cobj) $(aobj)
 	# first dep is the link script so this hacks together nicely
 	ld -m elf_i386 -T $^ -o $@
 
-$(cobj): build/%.c.o: src/%.c | $(buildpaths)
-	clang -target i686-elf -c $^ -o $@ $(flags)
+$(cobj): build/%.c.o: src/%.c $(chdr) | $(buildpaths)
+	clang -target i686-elf -c $< -o $@ $(flags)
 
 $(aobj): build/%.a.o: src/%.asm
 	nasm -f elf32 $^ -o $@

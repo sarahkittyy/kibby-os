@@ -31,6 +31,10 @@ void setup_serial() {
 	}
 }
 
+void on_kbd(void) {
+	uint8_t sc = inb(0x60);
+}
+
 void kernel_main() {
 	// disable NMI
 	outb(0x70, inb(0x70) | 0x80);
@@ -38,19 +42,15 @@ void kernel_main() {
 	// instantly set up the gdt
 	// NOTE: this line caused me so much pain
 	setup_gdt();
-
 	// setup the idt
 	setup_idt();
+
+	// enable NMI
+	outb(0x70, inb(0x70) & 0x7F);
 
 	// com port setup
 	setup_serial();
 
 	// NOTE: GRUB auto-enables a20 line. be sure to enable it around here if you need to not use grub for some reason
-
-	// testing kputs
-	kputs("booted, protected mode enabled!");
-
-	// hang
-	for (;;)
-		;
+	kprintf("booted, protected mode enabled!\n");
 }
