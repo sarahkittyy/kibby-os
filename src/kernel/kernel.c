@@ -36,6 +36,8 @@ void on_kbd(void) {
 }
 
 void kernel_main() {
+	// NOTE: GRUB auto-enables a20 line. be sure to enable it around here if you need to not use grub for some reason
+
 	// disable NMI
 	outb(0x70, inb(0x70) | 0x80);
 
@@ -51,6 +53,6 @@ void kernel_main() {
 	// com port setup
 	setup_serial();
 
-	// NOTE: GRUB auto-enables a20 line. be sure to enable it around here if you need to not use grub for some reason
+	// booted!
 	kprintf("booted, protected mode enabled!\n");
 }

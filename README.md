@@ -9,6 +9,11 @@ things currently implemented:
 - [x] printf()
 - [x] com ports
 - [x] idt, isrs, irqs.
-- [ ] user input
+- [ ] user input, scancodes
+- [ ] paging, malloc, free
 - [ ] user mode
-- [ ] idfk i'm doing my best
+- [ ] multitasking
+
+## screenshots so far
+
+![](docs/bare-screenshot.png)
