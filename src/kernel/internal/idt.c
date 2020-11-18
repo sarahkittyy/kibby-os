@@ -159,7 +159,7 @@ static const char* error_strings[] = {
 
 static void (*handlers[16])(void) = {
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL 
+	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL
 };
 
 void irq_add_callback(uint32_t irq, void (*cb)(void)) {

@@ -8,6 +8,7 @@ things currently implemented:
 - [x] enter protected mode
 - [x] printf()
 - [x] com ports
-- [x] idt
+- [x] idt, isrs, irqs.
+- [ ] user input
 - [ ] user mode
 - [ ] idfk i'm doing my best
