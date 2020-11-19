@@ -4,6 +4,7 @@
 #include "bio.h"
 #include "internal/gdt.h"
 #include "internal/idt.h"
+#include "internal/paging.h"
 
 void setup_serial() {
 	serial_t ports[4] = { COM1, COM2, COM3, COM4 };
@@ -49,6 +50,9 @@ void kernel_main() {
 
 	// enable NMI
 	outb(0x70, inb(0x70) & 0x7F);
+
+	// paging init!
+	setup_paging();
 
 	// com port setup
 	setup_serial();

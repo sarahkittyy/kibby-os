@@ -111,3 +111,10 @@ size_t sprintfv(char* out, const char* fmt, va_list args) {
 
 	return ct;
 }
+
+void* memset(void* data, uint8_t b, size_t n) {
+	for(size_t i = 0; i < n; ++i) {
+		*((uint8_t*)data) = b;
+	}
+	return data;
+}

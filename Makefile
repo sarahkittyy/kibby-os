@@ -30,7 +30,9 @@ run-debug: all
 		-drive format=raw,media=cdrom,file=$(iso) \
 		-serial file:com1.log \
 		-s -S \
-		-monitor stdio
+		-monitor stdio &
+	sleep 0.5s
+	termite -e 'gdb -tui -q --eval-command="target remote :1234" --eval-command="layout asm" --eval-command="layout reg"'
 
 clean:
 	rm -rf iso/*

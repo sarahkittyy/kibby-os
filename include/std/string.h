@@ -24,3 +24,6 @@ void itoa(char* dest, int x, int base);
 // print to string
 size_t sprintf(char* out, const char* fmt, ...);
 size_t sprintfv(char* out, const char* fmt, va_list l);
+
+// standard memset
+void* memset(void* data, uint8_t b, size_t n);

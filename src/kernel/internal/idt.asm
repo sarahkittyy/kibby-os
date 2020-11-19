@@ -37,7 +37,7 @@ isr_stub:
 	mov eax, esp
 	push eax
 	mov eax, interrupt_handler
-	call eax ; preserves epi
+	call eax ; preserves eip
 	pop eax
 	pop gs
 	pop fs

@@ -178,24 +178,27 @@ void interrupt_handler(regs_t* s) {
 		for (;;)
 			;
 		return;
-	}
-	// interrupts 32-39 are from PIC1, 40-47 are PIC2
-	uint32_t irq = s->id - 32;	 // 0-15
-	// irq 0 is called a lot so we print debug info when it's *not* irq 0
-	if (irq != 0)
-		cprintf(COM1, "Got IRQ %x\n", irq);
+	} else if (s->id >= 32 && s->id < 48) {
+		// interrupts 32-39 are from PIC1, 40-47 are PIC2
+		uint32_t irq = s->id - 32;	 // 0-15
+		// irq 0 is called a lot so we print debug info when it's *not* irq 0
+		if (irq != 0)
+			cprintf(COM1, "Got IRQ %x\n", irq);
 
-	// if the handler exists for the irq, run it.
-	if (handlers[irq]) {
-		handlers[irq]();
-	} else {
-		// kbd IRQ requires reading a byte regardless so we have a fallback
-		if (irq == 1) {
-			inb(0x60);
+		// if the handler exists for the irq, run it.
+		if (handlers[irq]) {
+			handlers[irq]();
+		} else {
+			// kbd IRQ requires reading a byte regardless so we have a fallback
+			if (irq == 1) {
+				inb(0x60);
+			}
 		}
+		pic_eoi(irq);
+		return;
+	} else {
+		// for higher level interrupts
 	}
-	pic_eoi(irq);
-	return;
 }
 
 void pic_eoi(uint32_t interrupt) {

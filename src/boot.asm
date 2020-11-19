@@ -17,8 +17,12 @@ align 4
 section .bss
 align 16
 stack_bot:
-resb 2 * MiB
+resb 16 * KiB
 stack_top:
+
+global kheap
+kheap:
+resb 8 * KiB
 
 ; multiboot wants to know where to start! we're startin here at _start
 section .text
