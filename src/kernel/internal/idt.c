@@ -117,7 +117,6 @@ void setup_idt() {
 	program_pic();
 
 	flush_idt();
-	cputs(COM1, "IDT Loaded\n");
 }
 
 static const char* error_strings[] = {
@@ -182,8 +181,8 @@ void interrupt_handler(regs_t* s) {
 		// interrupts 32-39 are from PIC1, 40-47 are PIC2
 		uint32_t irq = s->id - 32;	 // 0-15
 		// irq 0 is called a lot so we print debug info when it's *not* irq 0
-		if (irq != 0)
-			cprintf(COM1, "Got IRQ %x\n", irq);
+		/*if (irq != 0)*/
+			/*cprintf(COM1, "Got IRQ %x\n", irq);*/
 
 		// if the handler exists for the irq, run it.
 		if (handlers[irq]) {

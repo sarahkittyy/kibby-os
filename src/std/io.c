@@ -15,7 +15,7 @@ static int cursor_x = 0;
 static int cursor_y = 0;
 
 void kputchar(char s) {
-	volatile uint8_t* fb = (uint8_t*)0xB8000;
+	volatile uint8_t* fb = (uint8_t*)0xC00B8000;
 	uint8_t color		 = mkcolorattr(WHITE, BLACK);
 
 	int cpos = cursor_x + cursor_y * 80;

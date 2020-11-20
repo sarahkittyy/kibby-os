@@ -1,4 +1,4 @@
-ENTRY(_start)
+ENTRY(_boot)
 
 SECTIONS
 {
@@ -6,19 +6,29 @@ SECTIONS
 	. = 1M;
 
 	/* mb header has to be early on */
-	.text : ALIGN(4096)
-	{
-		/* multiboot header section first, and then all the .text code following. */
+	.multiboot : {
 		*(.multiboot)
+	}
+
+	/* loading the kernel at 3gb and placing it at 1mb (higher half kernel) */
+	. += 0xC0000000;
+
+	.text ALIGN(4096) : AT(ADDR(.text)-0xC0000000)
+	{
 		*(.text)
 	}
 
-	.data : ALIGN(4096)
+	.data ALIGN(4096) : AT(ADDR(.data)-0xC0000000)
 	{
 		*(.data)
 	}
 
-	.bss : ALIGN(4096)
+	.rodata ALIGN (4096) : AT(ADDR(.rodata)-0xC0000000)
+	{
+		*(.rodata*)
+	}
+
+	.bss ALIGN(4096) : AT(ADDR(.bss)-0xC0000000)
 	{
 		*(COMMON) /* refers to all uninitialized data in all input files */
 		*(.bss)

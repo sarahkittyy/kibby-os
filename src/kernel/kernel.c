@@ -34,6 +34,7 @@ void setup_serial() {
 
 void on_kbd(void) {
 	uint8_t sc = inb(0x60);
+	kprintf("Got scancode %d\n", sc);
 }
 
 void kernel_main() {
@@ -41,22 +42,32 @@ void kernel_main() {
 
 	// disable NMI
 	outb(0x70, inb(0x70) | 0x80);
+	kprintf("NMI Disabled\n");
+
+	// com port setup
+	setup_serial();
+	kprintf("Serial communications enabled!");
 
 	// instantly set up the gdt
 	// NOTE: this line caused me so much pain
 	setup_gdt();
+	kprintf("GDT Enabled\n");
+
 	// setup the idt
 	setup_idt();
+	kprintf("IDT Enabled\n");
 
 	// enable NMI
 	outb(0x70, inb(0x70) & 0x7F);
+	kprintf("NMI Enabled\n");
 
 	// paging init!
 	setup_paging();
+	kprintf("Paging Enabled!\n");
 
-	// com port setup
-	setup_serial();
+	// attach to the keyboard output
+	irq_add_callback(1, on_kbd);
 
 	// booted!
-	kprintf("booted, protected mode enabled!\n");
+	kprintf("Booted!\n");
 }

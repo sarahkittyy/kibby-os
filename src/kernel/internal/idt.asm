@@ -2,6 +2,7 @@ global flush_idt
 extern idt
 flush_idt:
 	lidt [idt]
+	sti
 	ret
 
 %macro nec_ih 1
