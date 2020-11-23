@@ -13,17 +13,32 @@ align 4
 	flags dd MBALIGN | MEMINFO
 	checksum dd CHECKSUM
 
-section .data
+section .bss
+align 16
+stack_bot:
+resb 16 * KiB
+stack_top:
+
+align 4096
 KERNEL_V_ADDR equ 0xC0000000
 KERNEL_V_PAGENO equ (KERNEL_V_ADDR >> 22)
-align 4096
 boot_page_dir:
-	dd 0x00000083 ; first 4MB identity mapped
-	times (KERNEL_V_PAGENO - 1) dd 0 ; bunch of empty pages
-	; kernel v addr entry
-	dd 0x00000083
-	times (1024 - KERNEL_V_PAGENO - 1) dd 0 ; fill the rest of the table
+	resb 0x1000
+	;dd (boot_page_table_i - KERNEL_V_ADDR) | 0x00000003 ; first 4MB identity mapped
+	;times (KERNEL_V_PAGENO - 1) dd 0 ; bunch of empty pages
+	 ;;kernel v addr entry
+	;dd (boot_page_table_i - KERNEL_V_ADDR) | 0x00000003
+	;times (1024 - KERNEL_V_PAGENO - 1) dd 0 ; fill the rest of the table
+boot_page_table_i:
+	;; 4MB of identity mapping
+	resb 0x1000
+;%assign i 0
+;%rep 1024
+	;dd (i | 0x03)
+;%assign i i+1
+;%endrep
 
+section .data
 ; type, base, lim
 %macro seg 3
 	dw ((%3 >> 12) & 0xFFFF), (%2 & 0xFFFF) ; limit0_15, base0_15
@@ -47,29 +62,58 @@ _boot:
 	; load a temporary gdt
 	lgdt [tmp_gdt_ptr]
 
+	xor ebx, ebx
+	; zero out the tables
+.loop:
+	mov [boot_page_dir - KERNEL_V_ADDR + ebx], dword 0
+	mov [boot_page_table_i - KERNEL_V_ADDR + ebx], dword 0
+
+	inc ebx
+	cmp ebx, 1024
+	jne .loop
+	;;;;;;;;;;;;;;;;;;;;;
+
+	mov eax, dword boot_page_table_i
+	sub eax, KERNEL_V_ADDR
+
+	mov ebx, eax
+	or ebx, 0x03
+	
+	mov ecx, dword boot_page_dir
+	sub ecx, KERNEL_V_ADDR
+
+	mov [ecx + 0], ebx
+	mov [ecx + (KERNEL_V_PAGENO * 4)], ebx
+
+	xor ebx, ebx ; loop var
+	mov ecx, 0x1000
+	; identity map the identity page table.
+.loop2:
+	; set the value of eax + offset to offset*0x1000
+	mov eax, ebx
+	imul ecx
+	or eax, 0x03
+	mov [boot_page_table_i - KERNEL_V_ADDR + (ebx * 4)], eax
+	
+	inc ebx
+	cmp ebx, 1024
+	jne .loop2
+
 	; time for paging :D
 	mov eax, (boot_page_dir - KERNEL_V_ADDR)
 	mov cr3, eax
 
-	; enable PSE
-	mov eax, cr4
-	or eax, 0x00000010
-	mov cr4, eax
-
 	; enable paging
-	mov eax, cr0
-	or eax, 0x80000001
-	mov cr0, eax
+	mov ebx, cr0
+	or ebx, 0x80000001
+	mov cr0, ebx
+
 
 	lea ecx, [_start]
 	jmp ecx
 
 ; multiboot wants to know where to start! we're startin here at _start
 _start:
-	; invalidate the first 4MB identity mapping
-	mov dword [boot_page_dir], 0
-	invlpg [0]
-
 	; set up the stack! esp points to the top of the stack and it grows downwards
 	mov esp, stack_top
 
@@ -80,10 +124,3 @@ _start:
 ; this *SHOULD* hang forever cuz it waits for an interrupt (which we disabled) but fuck sometimes some weird settings can still raise interrupts so we inf loop anyway
 .hang: hlt 
 	jmp .hang ; yeet
-
-; multiboot does not designate a stack pointer
-section .bss
-align 16
-stack_bot:
-resb 16 * KiB
-stack_top:

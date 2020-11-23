@@ -34,7 +34,7 @@ run-debug: all
 		-s -S \
 		-monitor stdio &
 	sleep 0.5s
-	termite -e 'gdb -tui -q --eval-command="target remote :1234" --eval-command="layout asm" --eval-command="layout reg"'
+	termite -e 'gdb -tui -q --eval-command="target remote :1234" --eval-command="layout asm" --eval-command="layout reg" --eval-command="focus cmd"'
 
 clean:
 	rm -rf iso/*
