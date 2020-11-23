@@ -5,8 +5,6 @@
 static const uint16_t CURSOR_COM_PORT = 0x3D4;
 static const uint16_t CURSOR_DAT_PORT = 0x3D5;
 
-static const uint8_t VGA_WIDTH = 80;
-
 void enable_cursor() {
 	outb(CURSOR_COM_PORT, 0x0A);
 	outb(CURSOR_DAT_PORT, (inb(CURSOR_DAT_PORT) & 0xC0) | 0);

@@ -32,6 +32,8 @@ typedef enum SERIAL {
 
 // clear the screen
 void clear_screen();
+// scroll the screen
+void scroll_screen(int rows);
 
 // put char to kernel
 void kputchar(char s);

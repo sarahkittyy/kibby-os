@@ -72,7 +72,6 @@ void kernel_main() {
 	outb(0x70, inb(0x70) & 0x7F);
 	kprintf("NMI Enabled\n");
 
-
 	// attach to the keyboard output
 	irq_add_callback(1, on_kbd);
 
