@@ -103,11 +103,15 @@ _boot:
 	mov eax, (boot_page_dir - KERNEL_V_ADDR)
 	mov cr3, eax
 
-	; enable paging
-	mov ebx, cr0
-	or ebx, 0x80000001
-	mov cr0, ebx
+	; enable PAE
+	mov eax, cr4
+	bts eax, 4
+	mov cr4, eax
 
+	; enable paging
+	mov eax, cr0
+	or eax, 0x80000001
+	mov cr0, eax
 
 	lea ecx, [_start]
 	jmp ecx
