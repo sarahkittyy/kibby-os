@@ -11,6 +11,7 @@ things currently implemented:
 - [x] idt, isrs, irqs.
 - [ ] user input, scancodes
 - [x] paging, higher half kernel
+- [x] usermode
 - [ ] malloc, free
 - [ ] page frame allocation
 - [ ] user mode

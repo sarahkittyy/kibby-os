@@ -68,7 +68,6 @@ void kernel_main() {
 	setup_idt();
 	kprintf("IDT Enabled\n");
 
-
 	// enable NMI
 	outb(0x70, inb(0x70) & 0x7F);
 	kprintf("NMI Enabled\n");

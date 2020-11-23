@@ -26,9 +26,6 @@ void gdt_set_gate_s(uint32_t id, gdt_t entry) {
 	kibby_gdt[id] = entry;
 }
 
-#include "kernel/std/io.h"
-#include "kernel/std/string.h"
-
 void setup_gdt() {
 	kibby_gdt_table.sz	 = (sizeof(gdt_t) * 6) - 1;
 	kibby_gdt_table.addr = (uint32_t)&kibby_gdt;
