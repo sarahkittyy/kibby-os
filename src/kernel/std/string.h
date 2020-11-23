@@ -19,7 +19,7 @@ int strcmp(const char* a, const char* b);
 void strrev(char* str);
 
 // int to string.
-void itoa(char* dest, int x, int base);
+void itoa(char* dest, uint32_t x, int base);
 
 // print to string
 size_t sprintf(char* out, const char* fmt, ...);

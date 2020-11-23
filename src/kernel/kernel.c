@@ -47,6 +47,10 @@ void kernel_main() {
 	// clear the screen
 	clear_screen();
 
+	// paging init!
+	setup_paging();
+	kprintf("Paging Enabled!\n");
+
 	// disable NMI
 	outb(0x70, inb(0x70) | 0x80);
 	kprintf("NMI Disabled\n");
@@ -64,13 +68,11 @@ void kernel_main() {
 	setup_idt();
 	kprintf("IDT Enabled\n");
 
+
 	// enable NMI
 	outb(0x70, inb(0x70) & 0x7F);
 	kprintf("NMI Enabled\n");
 
-	// paging init!
-	setup_paging();
-	kprintf("Paging Enabled!\n");
 
 	// attach to the keyboard output
 	irq_add_callback(1, on_kbd);

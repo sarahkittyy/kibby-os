@@ -45,6 +45,9 @@ struct gdt_table {
 } __attribute__((packed));
 typedef struct gdt_table gdt_table_t;
 
+// initialize the TSS
+void setup_tss(uint16_t ss0, uint32_t esp0);
+
 // defined in gdt.asm
 extern void gdt_flush();
 

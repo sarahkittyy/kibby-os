@@ -48,7 +48,7 @@ void strrev(char* str) {
 	}
 }
 
-void itoa(char* dest, int x, int base) {
+void itoa(char* dest, uint32_t x, int base) {
 	const char* ntod = "0123456789ABCDEF";
 
 	char* orig = dest;
