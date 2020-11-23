@@ -1,6 +1,6 @@
 #pragma once
 
-#include <kernel/std/type.h>
+#include "type.h"
 
 typedef enum COLOR {
 	BLACK,

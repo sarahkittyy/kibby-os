@@ -1,9 +1,10 @@
-#include "kernel/std/io.h"
+#include "io.h"
 
-#include <kernel/std/string.h>
+#include "string.h"
+#include "cursor.h"
 #include <stdarg.h>
 
-#include "../bio.h"
+#include "kernel/bio.h"
 
 uint8_t mkcolorattr(color_t fg, color_t bg) {
 	uint8_t res = 0;
@@ -24,6 +25,8 @@ void clear_screen() {
 
 	cursor_x = 0;
 	cursor_y = 0;
+
+	move_cursor(cursor_x, cursor_y);
 }
 
 void kputchar(char s) {
@@ -52,6 +55,8 @@ void kputs(const char* str) {
 	for (size_t i = 0; i < slen; ++i) {
 		kputchar(str[i]);
 	}
+
+	move_cursor(cursor_x, cursor_y);
 }
 
 void kprintf(const char* fmt, ...) {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <kernel/std/type.h>
+#include "type.h"
 
 #define assert(expr) m_assert(expr, #expr)
 

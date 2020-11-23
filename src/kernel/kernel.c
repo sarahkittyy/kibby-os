@@ -1,5 +1,6 @@
 #include <kernel/std/io.h>
 #include <kernel/std/string.h>
+#include <kernel/std/cursor.h>
 
 #include "bio.h"
 #include "internal/gdt.h"
@@ -40,6 +41,9 @@ void on_kbd(void) {
 void kernel_main() {
 	// NOTE: GRUB auto-enables a20 line. be sure to enable it around here if you need to not use grub for some reason
 
+	// enable cursor
+	enable_cursor();
+
 	// clear the screen
 	clear_screen();
 
@@ -67,7 +71,6 @@ void kernel_main() {
 	// paging init!
 	setup_paging();
 	kprintf("Paging Enabled!\n");
-
 
 	// attach to the keyboard output
 	irq_add_callback(1, on_kbd);

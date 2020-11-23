@@ -1,6 +1,6 @@
-#include "kernel/std/assert.h"
+#include "assert.h"
 
-#include <kernel/std/io.h>
+#include "io.h"
 
 void m_assert(bool res, const char* expr_str) {
 	if (!res) {

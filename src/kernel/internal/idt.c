@@ -3,7 +3,7 @@
 #include <kernel/std/io.h>
 #include <kernel/std/string.h>
 
-#include "../bio.h"
+#include "kernel/bio.h"
 
 volatile idt_entry_t idt_entries[256];
 idt_t idt;

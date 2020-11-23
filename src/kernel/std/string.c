@@ -1,6 +1,6 @@
-#include "kernel/std/string.h"
+#include "string.h"
 
-#include <kernel/std/assert.h>
+#include "assert.h"
 
 size_t strlen(const char* str) {
 	size_t i = 0;
@@ -11,6 +11,7 @@ size_t strlen(const char* str) {
 
 void strcpy(char* dest, const char* src) {
 	while (*src) { *dest++ = *src++; }
+	*dest = '\0';
 }
 
 void strcat(char* dest, const char* src) {
