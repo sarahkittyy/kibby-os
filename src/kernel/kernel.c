@@ -46,7 +46,7 @@ void kernel_main() {
 
 	// com port setup
 	setup_serial();
-	kprintf("Serial communications enabled!");
+	kprintf("Serial communications enabled!\n");
 
 	// instantly set up the gdt
 	// NOTE: this line caused me so much pain

@@ -7,11 +7,7 @@
 uint32_t page_dir[1024] __attribute__((aligned(4096)));
 
 void setup_paging() {
-	// zero out the page directory
-	for(volatile size_t i = 0; i < 1024; ++i) {
-		// rw, not present, kernel-only
-		page_dir[i] = 0;
-	}
+	memset(page_dir, 0, 1024 * sizeof(uint32_t));
 
 	// first entry is 0
 	page_dir[0] = 0x83;

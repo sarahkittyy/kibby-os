@@ -1,4 +1,5 @@
 #include "std/string.h"
+#include <std/assert.h>
 
 size_t strlen(const char* str) {
 	size_t i = 0;
@@ -114,7 +115,14 @@ size_t sprintfv(char* out, const char* fmt, va_list args) {
 
 void* memset(void* data, uint8_t b, size_t n) {
 	for(size_t i = 0; i < n; ++i) {
-		*((uint8_t*)data) = b;
+		((uint8_t*)data)[i] = b;
+	}
+	return data;
+}
+
+volatile void* memset_v(volatile void* data, uint8_t b, size_t n) {
+	for(volatile size_t i = 0; i < n; ++i) {
+		((uint8_t*)data)[i] = b;
 	}
 	return data;
 }

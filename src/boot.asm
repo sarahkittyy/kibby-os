@@ -47,8 +47,6 @@ _boot:
 	; load a temporary gdt
 	lgdt [tmp_gdt_ptr]
 
-	; setup the page dir & table
-
 	; time for paging :D
 	mov eax, (boot_page_dir - KERNEL_V_ADDR)
 	mov cr3, eax

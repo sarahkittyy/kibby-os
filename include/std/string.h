@@ -27,3 +27,5 @@ size_t sprintfv(char* out, const char* fmt, va_list l);
 
 // standard memset
 void* memset(void* data, uint8_t b, size_t n);
+// volatile memset
+volatile void* memset_v(volatile void* data, uint8_t b, size_t n);

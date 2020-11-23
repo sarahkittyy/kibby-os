@@ -5,6 +5,8 @@ iso=kibbyos.iso
 
 link_script=link.ld
 
+CC=i686-elf-gcc
+
 csrc=$(shell find src/ -type f -name '*.c')
 cobj=$(patsubst src/%.c,build/%.c.o,$(csrc))
 chdr=$(shell find include/ -type f -name '*.h')
@@ -54,7 +56,7 @@ $(kernel): $(link_script) $(cobj) $(aobj)
 	ld -m elf_i386 -T $^ -o $@
 
 $(cobj): build/%.c.o: src/%.c $(chdr) | $(buildpaths)
-	clang -target i686-elf -c $< -o $@ $(flags)
+	$(CC) -c $< -o $@ $(flags)
 
 $(aobj): build/%.a.o: src/%.asm
 	nasm -f elf32 $^ -o $@
