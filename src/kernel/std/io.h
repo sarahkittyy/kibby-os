@@ -1,6 +1,6 @@
 #pragma once
 
-#include <std/type.h>
+#include <kernel/std/type.h>
 
 typedef enum COLOR {
 	BLACK,
@@ -29,6 +29,9 @@ typedef enum SERIAL {
 	COM3 = 0x3E8,
 	COM4 = 0x2E8
 } serial_t;
+
+// clear the screen
+void clear_screen();
 
 // put char to kernel
 void kputchar(char s);

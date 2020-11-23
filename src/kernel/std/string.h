@@ -1,6 +1,6 @@
 #pragma once
 
-#include <std/type.h>
+#include "kernel/std/type.h"
 #include <stdarg.h>
 
 // compute the length of a string

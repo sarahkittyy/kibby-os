@@ -1,5 +1,6 @@
-#include "std/string.h"
-#include <std/assert.h>
+#include "kernel/std/string.h"
+
+#include <kernel/std/assert.h>
 
 size_t strlen(const char* str) {
 	size_t i = 0;

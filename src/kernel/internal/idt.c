@@ -1,7 +1,7 @@
 #include "idt.h"
 
-#include <std/io.h>
-#include <std/string.h>
+#include <kernel/std/io.h>
+#include <kernel/std/string.h>
 
 #include "../bio.h"
 

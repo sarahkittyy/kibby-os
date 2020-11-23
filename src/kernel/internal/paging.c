@@ -1,8 +1,8 @@
 #include "paging.h"
 
-#include <std/assert.h>
-#include <std/string.h>
-#include <std/io.h>
+#include <kernel/std/assert.h>
+#include <kernel/std/string.h>
+#include <kernel/std/io.h>
 
 #define KERNEL_V_ADDR 0xC0000000
 

@@ -9,14 +9,13 @@ CC=i686-elf-gcc
 
 csrc=$(shell find src/ -type f -name '*.c')
 cobj=$(patsubst src/%.c,build/%.c.o,$(csrc))
-chdr=$(shell find include/ -type f -name '*.h')
-chdr += $(shell find src/ -type f -name '*.h')
+chdr=$(shell find src/ -type f -name '*.h')
 asrc=$(shell find src/ -type f -name '*.asm')
 aobj=$(patsubst src/%.asm,build/%.a.o,$(asrc))
-flags=-Iinclude/ -std=gnu11 -ffreestanding -O2 -Wall -Wextra -nostdlib -Werror -Wno-unused-parameter -Wno-unused-variable
+flags=-Isrc/ -std=gnu11 -ffreestanding -O2 -Wall -Wextra -nostdlib -Werror -Wno-unused-parameter -Wno-unused-variable
 
-paths=std/ kernel/internal
-buildpaths=$(patsubst %,build/%,$(paths))
+paths=$(shell find src/ -type d)
+buildpaths=$(patsubst src/%,build/%,$(paths))
 
 .PHONY: all run bear clean
 

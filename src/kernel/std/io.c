@@ -1,8 +1,9 @@
-#include <std/io.h>
-#include <std/string.h>
+#include "kernel/std/io.h"
+
+#include <kernel/std/string.h>
 #include <stdarg.h>
 
-#include "../kernel/bio.h"
+#include "../bio.h"
 
 uint8_t mkcolorattr(color_t fg, color_t bg) {
 	uint8_t res = 0;
@@ -13,6 +14,17 @@ uint8_t mkcolorattr(color_t fg, color_t bg) {
 
 static int cursor_x = 0;
 static int cursor_y = 0;
+
+void clear_screen() {
+	char arr[80 * 25 + 1];
+	memset(arr, ' ', sizeof(arr) - 1);
+	arr[80 * 25] = '\0';
+
+	kputs(arr);
+
+	cursor_x = 0;
+	cursor_y = 0;
+}
 
 void kputchar(char s) {
 	volatile uint8_t* fb = (uint8_t*)0xC00B8000;

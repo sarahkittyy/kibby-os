@@ -1,6 +1,6 @@
 #pragma once
 
-#include <std/type.h>
+#include <kernel/std/type.h>
 
 // main kernel gdt
 void setup_gdt();

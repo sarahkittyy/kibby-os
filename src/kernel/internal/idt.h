@@ -1,6 +1,6 @@
 #pragma once
 
-#include <std/type.h>
+#include <kernel/std/type.h>
 
 typedef struct idt_entry {
 	uint16_t offset_lo;
