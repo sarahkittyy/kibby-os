@@ -10,8 +10,9 @@ things currently implemented:
 - [x] com ports
 - [x] idt, isrs, irqs.
 - [ ] user input, scancodes
-- [x] paging
+- [x] paging, higher half kernel
 - [ ] malloc, free
+- [ ] page frame allocation
 - [ ] user mode
 - [ ] multitasking
 
