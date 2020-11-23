@@ -24,29 +24,9 @@ boot_page_dir:
 	dd 0x00000083
 	times (1024 - KERNEL_V_PAGENO - 1) dd 0 ; fill the rest of the table
 
-; type, base, lim
-%macro seg 3
-	dw ((%3 >> 12) & 0xFFFF), (%2 & 0xFFFF) ; limit0_15, base0_15
-	db ((%2 >> 16) & 0xFF) ; base 16_23
-	db (0x90 | %1) ; type with present and S bits already set
-	db (0xC0 | ((%3 >> 28) & 0xF)) ; limit16_19, flags
-	db ((%2 >> 24) & 0xFF)
-%endmacro
-; temporary boot gdt
-tmp_gdt:
-	dq 0 ; null descriptor
-	seg (0x08 | 0x02), (0x0), (0xFFFFFFFF) ; code
-	seg (0x02), (0x0), (0xFFFFFFFF) ; data
-tmp_gdt_ptr:
-	dw (tmp_gdt_ptr - tmp_gdt - 1)
-	dd tmp_gdt
-
 section .text
 global _boot
 _boot:
-	; load a temporary gdt
-	lgdt [tmp_gdt_ptr]
-
 	; time for paging :D
 	mov eax, (boot_page_dir - KERNEL_V_ADDR)
 	mov cr3, eax
