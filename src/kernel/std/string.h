@@ -1,7 +1,8 @@
 #pragma once
 
-#include "kernel/std/type.h"
 #include <stdarg.h>
+
+#include "kernel/std/type.h"
 
 // compute the length of a string
 size_t strlen(const char* str);
@@ -27,7 +28,5 @@ size_t sprintfv(char* out, const char* fmt, va_list l);
 
 // standard memset
 void* memset(void* data, uint8_t b, size_t n);
-// volatile memset
-volatile void* memset_v(volatile void* data, uint8_t b, size_t n);
 // standard memcpy
 void* memcpy(void* dest, const void* src, size_t n);

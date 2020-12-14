@@ -33,7 +33,6 @@ void setup_gdt() {
 	gdt_set_gate_l(0, 0, 0, 0, 0);					// null
 	gdt_set_gate_l(1, 0, 0xFFFFFFFF, 0x9A, 0xC0);	// code
 	gdt_set_gate_l(2, 0, 0xFFFFFFFF, 0x92, 0xC0);	// data
-
 	// user code
 	gdt_t uc;
 	memset(&uc, 0, sizeof(gdt_t));
@@ -55,15 +54,13 @@ void setup_gdt() {
 	gdt_t ud = uc;
 	ud.ss.ex = 0;	// not executable
 	gdt_set_gate_s(4, ud);
-
 	// tss
-	uint32_t tss_base = (uint32_t)&tss;
-	uint32_t tss_limit = sizeof(tss_t);
-	// present, executable, accessed, byte granularity :D
-	gdt_set_gate_l(5, tss_base, tss_base + tss_limit, 0x89, 0x00);
-
-	gdt_flush();
+	uint32_t base = (uint32_t)&tss;
+	uint32_t limit = sizeof(tss_t);
+	gdt_set_gate_l(5, base, base + limit, 0x89, 0x00);
 	setup_tss(0x10, 0x0);
+	gdt_flush();
+	flush_tss();
 }
 
 void setup_tss(uint16_t ss0, uint32_t esp0) {
@@ -77,6 +74,4 @@ void setup_tss(uint16_t ss0, uint32_t esp0) {
 	tss.cs = 0x08 | 0x03;
 	// data segment
 	tss.ss = tss.ds = tss.es = tss.fs = tss.gs = 0x10 | 0x03;
-
-	flush_tss();
 }

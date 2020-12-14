@@ -1,4 +1,4 @@
 #pragma once
 
-// TODO: use this.
-extern void enter_usermode();
+// calls a function in usermode.
+extern void userexec(void (*fn)(void));

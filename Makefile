@@ -12,7 +12,7 @@ cobj=$(patsubst src/%.c,build/%.c.o,$(csrc))
 chdr=$(shell find src/ -type f -name '*.h')
 asrc=$(shell find src/ -type f -name '*.asm')
 aobj=$(patsubst src/%.asm,build/%.a.o,$(asrc))
-flags=-Isrc/ -std=gnu11 -ffreestanding -O2 -Wall -Wextra -nostdlib -Werror -Wno-unused-parameter -Wno-unused-variable
+flags=-Isrc/ -g -std=gnu11 -fno-builtin -ffreestanding -Wall -Wextra -nostdlib -Werror -Wno-unused-parameter -Wno-unused-variable
 
 paths=$(shell find src/ -type d)
 buildpaths=$(patsubst src/%,build/%,$(paths))
@@ -33,7 +33,7 @@ run-debug: all
 		-s -S \
 		-monitor stdio &
 	sleep 0.5s
-	termite -e 'gdb -tui -q --eval-command="target remote :1234" --eval-command="layout asm" --eval-command="layout reg" --eval-command="focus cmd"'
+	termite -e 'gdb -tui -q'
 
 clean:
 	rm -rf iso/*
@@ -58,7 +58,7 @@ $(cobj): build/%.c.o: src/%.c $(chdr) | $(buildpaths)
 	$(CC) -c $< -o $@ $(flags)
 
 $(aobj): build/%.a.o: src/%.asm
-	nasm -f elf32 $^ -o $@
+	nasm -g -f elf32 -F dwarf $^ -o $@
 
 $(buildpaths):
 	mkdir -p $@

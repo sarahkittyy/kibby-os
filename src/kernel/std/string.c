@@ -116,23 +116,17 @@ size_t sprintfv(char* out, const char* fmt, va_list args) {
 }
 
 void* memset(void* data, uint8_t b, size_t n) {
-	for(size_t i = 0; i < n; ++i) {
-		((uint8_t*)data)[i] = b;
-	}
-	return data;
-}
-
-volatile void* memset_v(volatile void* data, uint8_t b, size_t n) {
-	for(volatile size_t i = 0; i < n; ++i) {
-		((uint8_t*)data)[i] = b;
+	uint8_t* d = (uint8_t*)data;
+	while (n--) {
+		*d++ = b;
 	}
 	return data;
 }
 
 void* memcpy(void* dest, const void* src, size_t n) {
-	uint8_t* d = (uint8_t*)dest;
+	uint8_t* d		 = (uint8_t*)dest;
 	const uint8_t* s = (const uint8_t*)src;
-	for(size_t i = 0; i < n; ++i) {
+	for (size_t i = 0; i < n; ++i) {
 		*d++ = *s++;
 	}
 	return dest;

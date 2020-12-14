@@ -67,3 +67,9 @@ align 16
 stack_bot:
 resb 16 * KiB
 stack_top:
+
+; temporary kernel heap
+global heap_bot
+heap_bot:
+resb 16 * KiB
+heap_top:

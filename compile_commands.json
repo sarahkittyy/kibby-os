@@ -3,9 +3,9 @@
     "arguments": [
       "/usr/bin/i686-elf-gcc",
       "-c",
-      "src/kernel/std/cursor.c",
+      "src/kernel/internal/idt.c",
       "-o",
-      "build/kernel/std/cursor.c.o",
+      "build/kernel/internal/idt.c.o",
       "-Isrc/",
       "-std=gnu11",
       "-ffreestanding",
@@ -17,8 +17,8 @@
       "-Wno-unused-variable"
     ],
     "directory": "/home/sarahkitty/code/c/kibby-os",
-    "file": "/home/sarahkitty/code/c/kibby-os/src/kernel/std/cursor.c",
-    "output": "/home/sarahkitty/code/c/kibby-os/build/kernel/std/cursor.c.o"
+    "file": "/home/sarahkitty/code/c/kibby-os/src/kernel/internal/idt.c",
+    "output": "/home/sarahkitty/code/c/kibby-os/build/kernel/internal/idt.c.o"
   },
   {
     "arguments": [
@@ -45,27 +45,6 @@
     "arguments": [
       "/usr/bin/i686-elf-gcc",
       "-c",
-      "src/kernel/internal/paging.c",
-      "-o",
-      "build/kernel/internal/paging.c.o",
-      "-Isrc/",
-      "-std=gnu11",
-      "-ffreestanding",
-      "-O2",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wno-unused-parameter",
-      "-Wno-unused-variable"
-    ],
-    "directory": "/home/sarahkitty/code/c/kibby-os",
-    "file": "/home/sarahkitty/code/c/kibby-os/src/kernel/internal/paging.c",
-    "output": "/home/sarahkitty/code/c/kibby-os/build/kernel/internal/paging.c.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/i686-elf-gcc",
-      "-c",
       "src/kernel/internal/gdt.c",
       "-o",
       "build/kernel/internal/gdt.c.o",
@@ -82,27 +61,6 @@
     "directory": "/home/sarahkitty/code/c/kibby-os",
     "file": "/home/sarahkitty/code/c/kibby-os/src/kernel/internal/gdt.c",
     "output": "/home/sarahkitty/code/c/kibby-os/build/kernel/internal/gdt.c.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/i686-elf-gcc",
-      "-c",
-      "src/kernel/std/io.c",
-      "-o",
-      "build/kernel/std/io.c.o",
-      "-Isrc/",
-      "-std=gnu11",
-      "-ffreestanding",
-      "-O2",
-      "-Wall",
-      "-Wextra",
-      "-Werror",
-      "-Wno-unused-parameter",
-      "-Wno-unused-variable"
-    ],
-    "directory": "/home/sarahkitty/code/c/kibby-os",
-    "file": "/home/sarahkitty/code/c/kibby-os/src/kernel/std/io.c",
-    "output": "/home/sarahkitty/code/c/kibby-os/build/kernel/std/io.c.o"
   },
   {
     "arguments": [
@@ -129,6 +87,27 @@
     "arguments": [
       "/usr/bin/i686-elf-gcc",
       "-c",
+      "src/kernel/std/cursor.c",
+      "-o",
+      "build/kernel/std/cursor.c.o",
+      "-Isrc/",
+      "-std=gnu11",
+      "-ffreestanding",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-unused-parameter",
+      "-Wno-unused-variable"
+    ],
+    "directory": "/home/sarahkitty/code/c/kibby-os",
+    "file": "/home/sarahkitty/code/c/kibby-os/src/kernel/std/cursor.c",
+    "output": "/home/sarahkitty/code/c/kibby-os/build/kernel/std/cursor.c.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/i686-elf-gcc",
+      "-c",
       "src/kernel/std/string.c",
       "-o",
       "build/kernel/std/string.c.o",
@@ -150,9 +129,9 @@
     "arguments": [
       "/usr/bin/i686-elf-gcc",
       "-c",
-      "src/kernel/internal/idt.c",
+      "src/kernel/internal/paging.c",
       "-o",
-      "build/kernel/internal/idt.c.o",
+      "build/kernel/internal/paging.c.o",
       "-Isrc/",
       "-std=gnu11",
       "-ffreestanding",
@@ -164,7 +143,28 @@
       "-Wno-unused-variable"
     ],
     "directory": "/home/sarahkitty/code/c/kibby-os",
-    "file": "/home/sarahkitty/code/c/kibby-os/src/kernel/internal/idt.c",
-    "output": "/home/sarahkitty/code/c/kibby-os/build/kernel/internal/idt.c.o"
+    "file": "/home/sarahkitty/code/c/kibby-os/src/kernel/internal/paging.c",
+    "output": "/home/sarahkitty/code/c/kibby-os/build/kernel/internal/paging.c.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/i686-elf-gcc",
+      "-c",
+      "src/kernel/std/io.c",
+      "-o",
+      "build/kernel/std/io.c.o",
+      "-Isrc/",
+      "-std=gnu11",
+      "-ffreestanding",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-unused-parameter",
+      "-Wno-unused-variable"
+    ],
+    "directory": "/home/sarahkitty/code/c/kibby-os",
+    "file": "/home/sarahkitty/code/c/kibby-os/src/kernel/std/io.c",
+    "output": "/home/sarahkitty/code/c/kibby-os/build/kernel/std/io.c.o"
   }
 ]

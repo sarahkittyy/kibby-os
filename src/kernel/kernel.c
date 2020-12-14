@@ -1,11 +1,13 @@
+#include <kernel/std/cursor.h>
 #include <kernel/std/io.h>
 #include <kernel/std/string.h>
-#include <kernel/std/cursor.h>
 
 #include "bio.h"
 #include "internal/gdt.h"
 #include "internal/idt.h"
+#include "internal/kmem.h"
 #include "internal/paging.h"
+#include "internal/usermode.h"
 
 void setup_serial() {
 	serial_t ports[4] = { COM1, COM2, COM3, COM4 };
@@ -38,8 +40,18 @@ void on_kbd(void) {
 	kprintf("Got scancode %d\n", sc);
 }
 
+void userfn(void) {
+	kprintf("from user mode\n");
+	asm("cli");
+	for (;;)
+		;
+}
+
 void kernel_main() {
 	// NOTE: GRUB auto-enables a20 line. be sure to enable it around here if you need to not use grub for some reason
+
+	// setup the heap
+	heap_init();
 
 	// enable cursor
 	enable_cursor();
