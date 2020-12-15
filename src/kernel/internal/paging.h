@@ -37,19 +37,33 @@ typedef page_table_t* page_dir_t;
 
 uint32_t addr_shift(uint32_t addr);
 
+// main paging initialization
 void setup_paging();
+
+// move the page dir address given into cr3
 extern void flush_paging(uint32_t page_dir);
+// invlpg wrapper
 extern void invalidate_page(uint32_t page);
 
+// use the bound page directory to flush
 void set_page_dir();
+// bind a page directory for map_addr() and get_page()
 void bind_page_dir(page_dir_t page_dir);
+// get the bound page directory
 page_dir_t get_page_dir();
 
 // get the page given a virtual address
 page_t* get_page(void* vaddr);
 
 // map a physical address to a virtual address (4kb)
-void map_addr(void* physaddr, void* vaddr, bool kernel, bool writeable);
+// NOTE: when mapping note that the physical address of the kernel is at 0x00000000
+page_t* map_addr(void* physaddr, void* vaddr, bool kernel, bool writeable);
 
-// get the physical address given the virtual address
+// allocate a new 4kb page in the nearest available slot
+page_t* alloc_page(bool kernel, bool writeable);
+// free the given page from use
+void free_page(page_t* page);
+
+// looks up the page table and tries to find the physical address that a virtual address points to.
+// NULL if that address isn't present.
 void* get_phys_addr(void* vaddr);

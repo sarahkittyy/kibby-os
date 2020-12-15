@@ -2,27 +2,30 @@
 
 #include <kernel/internal/kmem.h>
 #include <kernel/std/assert.h>
+#include <kernel/std/bitset.h>
 #include <kernel/std/io.h>
 #include <kernel/std/string.h>
 
 #define KERNEL_V_ADDR 0xC0000000
 
-static page_dir_t cpagedir;
+static page_dir_t cur_page_dir;
+static bitset_t* page_bitset;
 
 void setup_paging() {
 	assert(sizeof(page_t) == 4);
 	assert(sizeof(page_table_t) == 4);
 
+	// available vmem goes from 0-this
+	size_t mem_end = 0x8FFFFFFF;
+	// each page is 4kb, so this is how many pages we have.
+	page_bitset = bitset_create(mem_end / 0x1000);
+
+	// create the main page directory, and bind it.
 	page_dir_t page_dir = (page_table_t*)kmalloc_a(1024 * sizeof(page_table_t));
 	bind_page_dir(page_dir);
-
 	memset(page_dir, 0, 1024 * sizeof(page_table_t));
 
-	// higher half kernel directory mappings
-	/*page_dir[768].s.p	 = 1;*/
-	/*page_dir[768].s.rw	 = 1;*/
-	/*page_dir[768].s.sup	 = 1;*/
-	/*page_dir[768].s.addr = addr_shift((uint32_t)page_table_identity - KERNEL_V_ADDR);*/
+	// map 4 MB of the kernel to the higher half
 	for (size_t i = 0; i < 1024; ++i) {
 		map_addr((void*)(0x00000000 + i * 0x1000),
 				 (void*)(0xC0000000 + i * 0x1000), true, true);
@@ -31,6 +34,7 @@ void setup_paging() {
 	// we map the last entry in the page directory to the page directory itself.
 	map_addr((void*)((uint32_t)page_dir - KERNEL_V_ADDR), (void*)0xFFFFF000, true, true);
 
+	// flush
 	set_page_dir();
 }
 
@@ -39,12 +43,12 @@ void set_page_dir() {
 }
 
 void bind_page_dir(page_dir_t page_dir) {
-	cpagedir = page_dir;
+	cur_page_dir = page_dir;
 }
 
 page_dir_t get_page_dir() {
 	// we always map the last entries to the table itself
-	return cpagedir;
+	return cur_page_dir;
 }
 
 uint32_t addr_shift(uint32_t addr) {
@@ -83,7 +87,7 @@ page_t* get_page(void* vaddr) {
 	return p + pi;
 }
 
-void map_addr(void* physaddr, void* vaddr, bool kernel, bool writeable) {
+page_t* map_addr(void* physaddr, void* vaddr, bool kernel, bool writeable) {
 	assert((uint32_t)vaddr % 4096 == 0);
 
 	// table the vaddr is in
@@ -119,6 +123,41 @@ void map_addr(void* physaddr, void* vaddr, bool kernel, bool writeable) {
 	p->s.rw	  = writeable;
 	p->s.sup  = !kernel;
 	p->s.addr = addr_shift((uint32_t)physaddr);
+
+	// set the bitset flag to indicate this page is used.
+	bitset_set(page_bitset, pti * 1024 + pi);
+
+	invalidate_page(pti);
+
+	return p;
+}
+
+page_t* alloc_page(bool kernel, bool writeable) {
+	// get the first available frame.
+	size_t idx = bitset_first_unset(page_bitset);
+	assert(idx != SIZE_MAX);
+
+	// so now we know that we want the 4kb zone @ i*0x1000 to be mapped
+	// and the kernel is physically in the lower half, so
+	// we're gonna move all mappings to the upper half :3
+	uint32_t physaddr = KERNEL_V_ADDR + idx * 0x1000;
+	// and then the virtual address is gonna be in the lower half just fine
+	uint32_t vaddr = idx * 0x1000;
+	// and THEN we map_addr
+	return map_addr((void*)physaddr, (void*)vaddr, kernel, writeable);
+}
+
+void free_page(page_t* page) {
+	// get the frame this page is in.
+	uint32_t physaddr = page->b & (~0xFFF);
+	physaddr -= KERNEL_V_ADDR;
+	size_t frame = physaddr / 0x1000;
+
+	// clear the bit
+	bitset_clear(page_bitset, frame);
+
+	// mark the page as not present
+	page->b = 0;
 }
 
 void* get_phys_addr(void* vaddr) {

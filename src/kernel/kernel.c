@@ -1,3 +1,4 @@
+#include <kernel/std/assert.h>
 #include <kernel/std/cursor.h>
 #include <kernel/std/io.h>
 #include <kernel/std/string.h>
