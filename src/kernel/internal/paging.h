@@ -32,9 +32,24 @@ typedef union {
 	uint32_t b;
 } page_table_t;
 
+// for readability
 typedef page_table_t* page_dir_t;
 
 uint32_t addr_shift(uint32_t addr);
 
 void setup_paging();
 extern void flush_paging(uint32_t page_dir);
+extern void invalidate_page(uint32_t page);
+
+void set_page_dir();
+void bind_page_dir(page_dir_t page_dir);
+page_dir_t get_page_dir();
+
+// get the page given a virtual address
+page_t* get_page(void* vaddr);
+
+// map a physical address to a virtual address (4kb)
+void map_addr(void* physaddr, void* vaddr, bool kernel, bool writeable);
+
+// get the physical address given the virtual address
+void* get_phys_addr(void* vaddr);

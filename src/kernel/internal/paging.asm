@@ -15,3 +15,16 @@ flush_paging:
 	pop ebp
 	pop eax
 	ret
+
+global invalidate_page
+invalidate_page:
+	push eax
+	push ebp
+
+	mov ebp, esp
+	mov eax, [ebp + 4]
+	invlpg [eax]
+
+	pop ebp
+	pop eax
+	ret
