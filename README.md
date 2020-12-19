@@ -9,12 +9,13 @@ things currently implemented:
 - [x] printf()
 - [x] com ports
 - [x] idt, isrs, irqs.
-- [ ] user input, scancodes
+- [x] user input
+- [ ] scancode table
 - [x] paging, higher half kernel
 - [x] usermode
+- [x] page frame allocation
 - [ ] malloc, free
-- [ ] page frame allocation
-- [ ] user mode
+- [x] user mode
 - [ ] multitasking
 
 ## screenshots so far
