@@ -12,7 +12,7 @@ cobj=$(patsubst src/%.c,build/%.c.o,$(csrc))
 chdr=$(shell find src/ -type f -name '*.h')
 asrc=$(shell find src/ -type f -name '*.asm')
 aobj=$(patsubst src/%.asm,build/%.a.o,$(asrc))
-flags=-Isrc/ -g -std=gnu11 -fno-builtin -ffreestanding -Wall -Wextra -nostdlib -Werror -Wno-unused-parameter -Wno-unused-variable
+flags=-Isrc/ -g -std=gnu11 -fno-builtin -ffreestanding -Wall -Wextra -nostdlib -Werror -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function
 
 paths=$(shell find src/ -type d)
 buildpaths=$(patsubst src/%,build/%,$(paths))

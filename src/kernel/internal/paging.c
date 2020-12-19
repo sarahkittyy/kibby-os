@@ -16,12 +16,12 @@ void setup_paging() {
 	assert(sizeof(page_table_t) == 4);
 
 	// available vmem goes from 0-this
-	size_t mem_end = 0x8FFFFFFF;
+	size_t mem_end = 0xBFFFF000;
 	// each page is 4kb, so this is how many pages we have.
 	page_bitset = bitset_create(mem_end / 0x1000);
 
 	// create the main page directory, and bind it.
-	page_dir_t page_dir = (page_table_t*)kmalloc_a(1024 * sizeof(page_table_t));
+	page_dir_t page_dir = (page_table_t*)kmalloc_old_a(1024 * sizeof(page_table_t));
 	bind_page_dir(page_dir);
 	memset(page_dir, 0, 1024 * sizeof(page_table_t));
 
@@ -104,7 +104,7 @@ page_t* map_addr(void* physaddr, void* vaddr, bool kernel, bool writeable) {
 		dir[pti].s.rw  = 1;
 		dir[pti].s.sup = 1;
 
-		page_t* new_table = (page_t*)kmalloc_a(1024 * sizeof(page_t));
+		page_t* new_table = (page_t*)kmalloc_old_a(1024 * sizeof(page_t));
 		memset(new_table, 0, 1024 * sizeof(page_t));
 		dir[pti].s.addr = addr_shift((uint32_t)new_table - KERNEL_V_ADDR);
 	}

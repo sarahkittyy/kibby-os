@@ -131,3 +131,10 @@ void* memcpy(void* dest, const void* src, size_t n) {
 	}
 	return dest;
 }
+
+void* memmove(void* dest, const void* src, size_t n) {
+	uint8_t arr[n];
+	memcpy(arr, src, n);
+	memcpy(dest, arr, n);
+	return dest;
+}

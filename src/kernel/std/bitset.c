@@ -11,9 +11,9 @@ static size_t bitset_minor_index(size_t b) {
 }
 
 bitset_t* bitset_create(size_t bits) {
-	bitset_t* b = (bitset_t*)kmalloc(sizeof(bitset_t));
+	bitset_t* b = (bitset_t*)kmalloc_old(sizeof(bitset_t));
 	// 1 byte / 8 bits
-	b->data = (uint8_t*)kmalloc(bits / 8 + 1);
+	b->data = (uint8_t*)kmalloc_old(bits / 8 + 1);
 	b->sz	= bits;
 	return b;
 }

@@ -1,6 +1,7 @@
 #include <kernel/std/assert.h>
 #include <kernel/std/cursor.h>
 #include <kernel/std/io.h>
+#include <kernel/std/ordered_list.h>
 #include <kernel/std/string.h>
 
 #include "bio.h"
@@ -38,14 +39,7 @@ void setup_serial() {
 
 void on_kbd(void) {
 	uint8_t sc = inb(0x60);
-	kprintf("Got scancode %d\n", sc);
-}
-
-void userfn(void) {
-	kprintf("from user mode\n");
-	asm("cli");
-	for (;;)
-		;
+	kprintf("got scancode %d\n", sc);
 }
 
 void kernel_main() {
@@ -62,32 +56,32 @@ void kernel_main() {
 
 	// paging init!
 	setup_paging();
-	kprintf("Paging Enabled!\n");
+	kprintf("pwaging enabled :3!\n");
 
 	// disable NMI
 	outb(0x70, inb(0x70) | 0x80);
-	kprintf("NMI Disabled\n");
+	kprintf("nyan maskable intewwupts disabled (for gdt initiawization)\n");
 
 	// com port setup
 	setup_serial();
-	kprintf("Serial communications enabled!\n");
+	kprintf("com ports enyabled (cputs, cprintf)! <3\n");
 
 	// instantly set up the gdt
 	// NOTE: this line caused me so much pain
 	setup_gdt();
-	kprintf("GDT Enabled\n");
+	kprintf("global descwiptor table setup\n");
 
 	// setup the idt
 	setup_idt();
-	kprintf("IDT Enabled\n");
+	kprintf("intewwupts enabled!!!\n");
 
 	// enable NMI
 	outb(0x70, inb(0x70) & 0x7F);
-	kprintf("NMI Enabled\n");
+	kprintf("nyan maskable intewwupts are bacc <33\n");
 
 	// attach to the keyboard output
 	irq_add_callback(1, on_kbd);
 
 	// booted!
-	kprintf("Booted!\n");
+	kprintfr("boot compwete :3\n");
 }

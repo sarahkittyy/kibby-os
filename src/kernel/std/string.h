@@ -30,3 +30,5 @@ size_t sprintfv(char* out, const char* fmt, va_list l);
 void* memset(void* data, uint8_t b, size_t n);
 // standard memcpy
 void* memcpy(void* dest, const void* src, size_t n);
+// standard memmove
+void* memmove(void* dest, const void* src, size_t n);

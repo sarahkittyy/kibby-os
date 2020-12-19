@@ -1,10 +1,10 @@
 #include "io.h"
 
-#include "string.h"
-#include "cursor.h"
 #include <stdarg.h>
 
+#include "cursor.h"
 #include "kernel/bio.h"
+#include "string.h"
 
 uint8_t mkcolorattr(color_t fg, color_t bg) {
 	uint8_t res = 0;
@@ -44,8 +44,10 @@ void scroll_screen(int rows) {
 }
 
 void kputchar(char s) {
-	uint8_t color		 = mkcolorattr(WHITE, BLACK);
+	kputcharc(s, mkcolorattr(WHITE, BLACK));
+}
 
+void kputcharc(char s, uint8_t color) {
 	int cpos = cursor_x + cursor_y * VGA_WIDTH;
 
 	if (s == '\n') {
@@ -71,7 +73,23 @@ void kputs(const char* str) {
 
 	move_cursor(cursor_x, cursor_y);
 
-	if(cursor_y > 22) {
+	if (cursor_y > 22) {
+		scroll_screen(cursor_y - 22);
+	}
+}
+
+void kputsr(const char* str) {
+	size_t slen = strlen(str);
+
+	color_t cols[6] = { LIGHT_RED, YELLOW, LIGHT_GREEN, LIGHT_BLUE, BLUE, LIGHT_PURPLE };
+
+	for (size_t i = 0; i < slen; ++i) {
+		kputcharc(str[i], cols[i % (sizeof(cols) / sizeof(cols[0]))]);
+	}
+
+	move_cursor(cursor_x, cursor_y);
+
+	if (cursor_y > 22) {
 		scroll_screen(cursor_y - 22);
 	}
 }
@@ -84,6 +102,16 @@ void kprintf(const char* fmt, ...) {
 	va_end(args);
 
 	kputs(res);
+}
+
+void kprintfr(const char* fmt, ...) {
+	va_list args;
+	va_start(args, fmt);
+	char res[1024];
+	sprintfv(res, fmt, args);
+	va_end(args);
+
+	kputsr(res);
 }
 
 bool cisempty(serial_t port) {

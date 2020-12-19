@@ -8,7 +8,7 @@ extern uint32_t heap_bot;
 void heap_init();
 
 // allocate some bytes
-uint32_t kmalloc(size_t sz);
+uint32_t kmalloc_old(size_t sz);
 
 // allocate some bytes aligned on a page boundary
-uint32_t kmalloc_a(size_t sz);
+uint32_t kmalloc_old_a(size_t sz);

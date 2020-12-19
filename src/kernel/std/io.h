@@ -37,10 +37,17 @@ void scroll_screen(int rows);
 
 // put char to kernel
 void kputchar(char s);
+// put char to kernel, with color
+void kputcharc(char s, uint8_t col);
 // print to kernel (for debugging)
 void kputs(const char* str);
 // print to kernel (for debugging)
 void kprintf(const char* fmt, ...);
+
+// print to kernel in rainbow (for debugging)
+void kputsr(const char* str);
+// rainbow kernel printing for fun
+void kprintfr(const char* fmt, ...);
 
 // print single char to serial port
 void cputchar(serial_t port, char s);
