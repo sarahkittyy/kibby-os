@@ -53,7 +53,8 @@ void bind_page_dir(page_dir_t page_dir);
 page_dir_t get_page_dir();
 
 // get the page given a virtual address
-page_t* get_page(void* vaddr);
+// if make is true, we create the page table if it doesn't exist
+page_t* get_page(void* vaddr, bool make);
 
 // map a physical address to a virtual address (4kb)
 // NOTE: when mapping note that the physical address of the kernel is at 0x00000000
@@ -61,6 +62,9 @@ page_t* map_addr(void* physaddr, void* vaddr, bool kernel, bool writeable);
 
 // allocate a new 4kb page in the nearest available slot
 page_t* alloc_page(bool kernel, bool writeable);
+// allocate a page
+void alloc_page_exists(page_t* p, bool kernel, bool writeable);
+
 // free the given page from use
 void free_page(page_t* page);
 

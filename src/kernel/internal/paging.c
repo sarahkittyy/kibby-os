@@ -7,6 +7,10 @@
 #include <kernel/std/string.h>
 
 #define KERNEL_V_ADDR 0xC0000000
+// place it at kernel + 4 mb (past the standard kernel mapping)
+#define KERNEL_HEAP_ADDR (0xC0000000 + (4 * 1024 * 1024))
+// make it big ig
+#define KERNEL_HEAP_ISIZE 0x100000
 
 static page_dir_t cur_page_dir;
 static bitset_t* page_bitset;
@@ -21,7 +25,7 @@ void setup_paging() {
 	page_bitset = bitset_create(mem_end / 0x1000);
 
 	// create the main page directory, and bind it.
-	page_dir_t page_dir = (page_table_t*)kmalloc_old_a(1024 * sizeof(page_table_t));
+	page_dir_t page_dir = (page_table_t*)kmalloc_a(1024 * sizeof(page_table_t));
 	bind_page_dir(page_dir);
 	memset(page_dir, 0, 1024 * sizeof(page_table_t));
 
@@ -29,13 +33,30 @@ void setup_paging() {
 	for (size_t i = 0; i < 1024; ++i) {
 		map_addr((void*)(0x00000000 + i * 0x1000),
 				 (void*)(0xC0000000 + i * 0x1000), true, true);
+		// example of code that does the same as ^^
+		/*alloc_page_exists(get_page((void*)(0xC0000000 + i * 0x1000), true), true, true);*/
 	}
 
 	// we map the last entry in the page directory to the page directory itself.
 	map_addr((void*)((uint32_t)page_dir - KERNEL_V_ADDR), (void*)0xFFFFF000, true, true);
 
+	// place the heap at KERNEL_V_ADDR + 4MB
+	// and allocate space for 0x20000 void*s
+	// the heap's initial size all needs to be paged :3
+	// it expands itself
+	for (size_t i = 0; i < (KERNEL_HEAP_ISIZE / 0x1000); ++i) {
+		map_addr(
+			(void*)(KERNEL_HEAP_ADDR - KERNEL_V_ADDR + (i * 0x1000)),
+			(void*)(KERNEL_HEAP_ADDR + (i * 0x1000)),
+			true,
+			true);
+	}
+
 	// flush
 	set_page_dir();
+
+	// set up the heap
+	heap_init((void*)KERNEL_HEAP_ADDR, (void*)(KERNEL_HEAP_ADDR + KERNEL_HEAP_ISIZE), (void*)0xFFFFE000);
 }
 
 void set_page_dir() {
@@ -54,7 +75,7 @@ page_dir_t get_page_dir() {
 uint32_t addr_shift(uint32_t addr) {
 	return addr / 0x1000;
 }
-page_t* get_page(void* vaddr) {
+page_t* get_page(void* vaddr, bool make) {
 	// each page maps 4 KiB
 	// each table maps 4 MiB
 	// the whole dir maps 4 GiB
@@ -69,20 +90,27 @@ page_t* get_page(void* vaddr) {
 	// get the directory
 	page_dir_t dir = get_page_dir();
 	// get the table in that directory
-	page_table_t tbl = dir[pti];
+	page_table_t* tbl = &dir[pti];
 
 	// assert the table is present.
-	if (!tbl.s.p) {
-		return NULL;
+	if (!tbl->s.p) {
+		if (make) {
+			// make the table
+			tbl->s.p   = 1;
+			tbl->s.rw  = 1;
+			tbl->s.sup = 1;
+
+			page_t* tbl_data = (page_t*)kmalloc_a(1024 * sizeof(page_t));
+			memset(tbl_data, 0, 1024 * sizeof(page_t));
+			tbl->s.addr = addr_shift((uint32_t)tbl_data - KERNEL_V_ADDR);
+		} else {
+			return NULL;
+		}
 	}
 
 	// get all the pages in that table
-	page_t* p = (page_t*)((uint32_t)tbl.b & (~0xFFF));
+	page_t* p = (page_t*)((uint32_t)tbl->b & (~0xFFF));
 	p		  = (page_t*)((uint32_t)p + KERNEL_V_ADDR);
-	// check if the page needed is present
-	if (!p[pi].s.p) {
-		return NULL;
-	}
 	// return the page
 	return p + pi;
 }
@@ -104,7 +132,7 @@ page_t* map_addr(void* physaddr, void* vaddr, bool kernel, bool writeable) {
 		dir[pti].s.rw  = 1;
 		dir[pti].s.sup = 1;
 
-		page_t* new_table = (page_t*)kmalloc_old_a(1024 * sizeof(page_t));
+		page_t* new_table = (page_t*)kmalloc_a(1024 * sizeof(page_t));
 		memset(new_table, 0, 1024 * sizeof(page_t));
 		dir[pti].s.addr = addr_shift((uint32_t)new_table - KERNEL_V_ADDR);
 	}
@@ -125,6 +153,13 @@ page_t* map_addr(void* physaddr, void* vaddr, bool kernel, bool writeable) {
 	p->s.addr = addr_shift((uint32_t)physaddr);
 
 	// set the bitset flag to indicate this page is used.
+	/*
+		i think this works(?)
+		for example, when we map the kernel to the higher half
+		we are using the pages for the lower half of memory
+		and so pti and pi are accurate because that lower half
+		of physmem is allocated i think :3
+	*/
 	bitset_set(page_bitset, pti * 1024 + pi);
 
 	invalidate_page(pti);
@@ -147,6 +182,31 @@ page_t* alloc_page(bool kernel, bool writeable) {
 	return map_addr((void*)physaddr, (void*)vaddr, kernel, writeable);
 }
 
+void alloc_page_exists(page_t* p, bool kernel, bool writeable) {
+	/*	so we have a page at a certain position already
+		meaning that the virtual address will be the same regardless
+
+		this won't intersect with the bitset because the bitset
+		marks free physical addresses :3
+	*/
+
+	// find the first free physical address in 0-BFFFF000
+	size_t idx = bitset_first_unset(page_bitset);
+	assert(idx != SIZE_MAX);
+
+	// set that as stolen
+	bitset_set(page_bitset, idx);
+
+	// then we're gonna put that physaddr into the page
+	p->s.addr = addr_shift(idx * 0x1000);
+	// and set all the other data
+	p->s.p	 = 1;
+	p->s.rw	 = writeable;
+	p->s.sup = !kernel;
+
+	// and then that's it i think
+}
+
 void free_page(page_t* page) {
 	// get the frame this page is in.
 	uint32_t physaddr = page->b & (~0xFFF);
@@ -162,7 +222,7 @@ void free_page(page_t* page) {
 
 void* get_phys_addr(void* vaddr) {
 	// find the page handing this virtual address
-	page_t* p = get_page(vaddr);
+	page_t* p = get_page(vaddr, false);
 	if (p == NULL) {
 		return NULL;
 	}
