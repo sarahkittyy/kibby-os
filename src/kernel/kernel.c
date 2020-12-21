@@ -1,5 +1,6 @@
 #include <kernel/std/assert.h>
 #include <kernel/std/cursor.h>
+#include <kernel/std/heap.h>
 #include <kernel/std/io.h>
 #include <kernel/std/ordered_list.h>
 #include <kernel/std/string.h>
@@ -45,8 +46,8 @@ void on_kbd(void) {
 void kernel_main() {
 	// NOTE: GRUB auto-enables a20 line. be sure to enable it around here if you need to not use grub for some reason
 
-	// setup the heap
-	heap_init();
+	// setup the rudimentary heap
+	old_heap_init();
 
 	// enable cursor
 	enable_cursor();
@@ -84,4 +85,11 @@ void kernel_main() {
 
 	// booted!
 	kprintfr("boot compwete :3\n");
+
+	for (size_t i = 0;; ++i) {
+		void* a = kmalloc(1024);
+		kprintf("%d\n", i);
+	}
+
+	/*kprintf("a %d, b %d\n", a, b);*/
 }

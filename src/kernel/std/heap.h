@@ -11,7 +11,6 @@
 */
 
 #include <kernel/internal/kmem.h>
-#include <kernel/internal/paging.h>
 #include <kernel/std/ordered_list.h>
 #include <kernel/std/type.h>
 
@@ -36,8 +35,11 @@ typedef struct {
 	bool writeable;
 } heap_t;
 
+// start is where the heap should be placed
+// end is where the heap initially ends
+// max is the maximum size of the heap
 heap_t* heap_make(void* start, void* end, void* max, bool kernel, bool writeable);
 
 // allocation functions
-void* kmalloc(size_t sz);
-void kfree(void* addr);
+void* heap_alloc(heap_t* h, size_t sz);
+void heap_free(heap_t* h, void* addr);

@@ -5,10 +5,13 @@
 extern uint32_t heap_bot;
 
 // boop up heap_bot to the higher half
-void heap_init();
+void old_heap_init();
+
+// initialize the new heap
+void heap_init(void* start, void* end, void* max);
 
 // allocate some bytes
-uint32_t kmalloc_old(size_t sz);
+void* kmalloc(size_t sz);
 
 // allocate some bytes aligned on a page boundary
-uint32_t kmalloc_old_a(size_t sz);
+void* kmalloc_a(size_t sz);
